@@ -14,8 +14,36 @@
         <version>1.3.0.RELEASE</version>
     </parent>
 
+  <repositories>
+    <repository>
+      <id>nexus</id>
+      <name>Team Nexus Repository</name>
+      <url>http://maven.betameo.com:8888/nexus/content/groups/public</url>
+    </repository>
+  </repositories>
+
+  <!-- 插件地址 -->
+  <pluginRepositories>
+    <pluginRepository>
+      <id>nexus</id>
+      <name>Team Nexus Repository</name>
+      <url>http://maven.betameo.com:8888/nexus/content/groups/public</url>
+    </pluginRepository>
+  </pluginRepositories>
+
+  <distributionManagement>
+    <repository>
+      <id>nexus-releases</id>
+      <url>http://maven.betameo.com:8888/nexus/content/repositories/releases/</url>
+    </repository>
+    <snapshotRepository>
+      <id>nexus-snapshots</id>
+      <url>http://maven.betameo.com:8888/nexus/content/repositories/snapshots/</url>
+    </snapshotRepository>
+  </distributionManagement>
+
     <properties>
-        <java.version>1.8</java.version>
+        <java.version>1.7</java.version>
         <!--  依赖版本  -->
         <mybatis.version>3.3.1</mybatis.version>
         <mybatis.spring.version>1.2.4</mybatis.spring.version>
