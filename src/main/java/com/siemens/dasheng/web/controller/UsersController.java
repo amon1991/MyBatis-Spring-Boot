@@ -24,17 +24,16 @@
 
 package com.siemens.dasheng.web.controller;
 
-import com.github.pagehelper.PageInfo;
-import com.siemens.dasheng.web.model.UserInfo;
+import com.siemens.dasheng.web.model.Users;
+import com.siemens.dasheng.web.service.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.ModelAndView;
-import com.siemens.dasheng.web.service.UserInfoService;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -42,46 +41,71 @@ import java.util.List;
  * @since 2015-12-19 11:10
  */
 @RestController
-@RequestMapping("/userinfo")
-public class UserInfoController {
+@RequestMapping("/users")
+public class UsersController {
 
     @Autowired
-    private UserInfoService userInfoService;
+    private UsersService usersService;
 
-    @RequestMapping
-    public PageInfo<UserInfo> getAll(UserInfo userInfo) {
-        System.out.println("####");
-        List<UserInfo> userInfoList = userInfoService.getAll(userInfo);
-        return new PageInfo<UserInfo>(userInfoList);
+
+    /*@RequestMapping
+    public PageInfo<Users> getAll(Users users) {
+        List<Users> usersList = usersService.getAll(users);
+        return new PageInfo<>(usersList);
+    }*/
+
+
+    @RequestMapping(value = "/all/{userType}")
+    public List<Users> getAll(@PathVariable Integer userType){
+        if (userType==0||userType==1){//超级管理员和普通管理员列表
+            return usersService.getAllAdminUsers();
+        }else if (userType==2){//普通用户列表
+            return usersService.getAllCommonUsers();
+        }else{
+            return new ArrayList<>();
+        }
     }
 
-    @RequestMapping(value = "/add")
-    public UserInfo add() {
-        return new UserInfo();
-    }
-
+    /**
+     * 查询单个用户信息
+     * @param id
+     * @return
+     */
     @RequestMapping(value = "/view/{id}")
-    public UserInfo view(@PathVariable Integer id) {
-        ModelAndView result = new ModelAndView();
-        UserInfo userInfo = userInfoService.getById(id);
+    public Users view(@PathVariable Integer id) {
+        Users userInfo = usersService.getById(id);
         return userInfo;
     }
 
+    /**
+     * 删除单个用户信息
+     * @param id
+     * @return
+     */
     @RequestMapping(value = "/delete/{id}")
     public ModelMap delete(@PathVariable Integer id) {
         ModelMap result = new ModelMap();
-        userInfoService.deleteById(id);
+        usersService.deleteById(id);
         result.put("msg", "删除成功!");
         return result;
     }
 
+    /**
+     * 新增或者更新用户信息
+     * @param userInfo
+     * @return
+     */
     @RequestMapping(value = "/save", method = RequestMethod.POST)
-    public ModelMap save(UserInfo userInfo) {
+    public ModelMap saveOrUpdate(Users userInfo) {
+
         ModelMap result = new ModelMap();
         String msg = userInfo.getId() == null ? "新增成功!" : "更新成功!";
-        userInfoService.save(userInfo);
+
+        usersService.saveOrUpdate(userInfo);
         result.put("userInfo", userInfo);
         result.put("msg", msg);
+
         return result;
+
     }
 }
